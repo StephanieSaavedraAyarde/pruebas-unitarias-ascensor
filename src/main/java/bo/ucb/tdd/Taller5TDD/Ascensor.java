@@ -1,4 +1,4 @@
-package main.java.bo.ucb.tdd.Taller5TDD;
+package bo.ucb.tdd.Taller5TDD;
 
 import java.util.Random;
 
@@ -33,9 +33,7 @@ public class Ascensor {
     }
    
     public Persona crearPersona() throws Exception{ 
-        piso_origen = (int) (Math.random() * (3 - 1 + 1) + 1);
-        System.out.println("El piso en el que se encuentra es: " + piso_origen);
-        return new Persona(piso_origen);
+        return new Persona();
     }
 
     public int getPiso_origen(){

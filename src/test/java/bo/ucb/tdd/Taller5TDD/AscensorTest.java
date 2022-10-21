@@ -1,148 +1,90 @@
-package test.java.bo.ucb.tdd.Taller5TDD;
+package bo.ucb.tdd.Taller5TDD;
 
-import org.junit.Before;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import com.ucb.tdd.test.Ascensor;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class AscensorTest {
 
-    private Ascensor ascensor;
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-    
-    @Before
-    public void before(){
-        ascensor = new Ascensor();
-    }
+    Persona persona;
+    Ascensor ascensor;
 
     // Al crear una persona, esta será situada en un piso aleatorio entre 1 y 3
-
     @Test
-    public void crearPersonaEnPisoAleatorio() throws Exception{
-        System.out.println("Test Case crearPersonaEnPisoAleatorio");
+    public void crearPersonaEnPisoAleatorio(){
 
-        // 1. Preparación de la prueba
-        System.out.println("======================================" + ascensor);
+        System.out.println("Test Case: crearPersonaEnPisoAleatorio");
 
-        // 2. Lógica de la prueba
-        Persona persona = ascensor.crearPersona();
+        System.out.println(persona.getPiso_origen());
 
-        // 3. Verificación (Assert)
-        assertNotNull(persona);
+        assertTrue(persona.getPiso_origen() < 4 && persona.getPiso_origen() > 0);
     }
 
-    /***
-     * Segun la logica utilizada para este caso, se sabe que se crea un asensor al inicio del
-     * dia. Por lo que, al momento de instanciar un nuevo ascensor, este debe estar situado
-     * en el piso uno.
-     */
+    // Se asignará el piso destino aleatoriamente verificando que no sea el mismo que el piso origen
     @Test
-    public void puertaEnPrimerPisoAlInicioDelDia(){
-        System.out.println();
-        System.out.println("============================================");
-        System.out.println("Testing puertaEnPrimerPisoAlInicioDelDia...");
-        System.out.println();
+    public void asignarPisoDeDestinoDePersona(){
+        System.out.println("Test Case: asignarPisoDeDestinoDePersona");
 
-        // 1. Preparacion de la prueba
-        Ascensor a;
+        persona.setPiso_destino();
 
-        // 2. Logica de la prueba
-        a = new Ascensor();
-
-        // 3. Verificacion (Assert)
-        assertEquals(1, a.getPiso());
-
-        System.out.println("============================================");
+        System.out.println("Piso origen: " + persona.getPiso_origen());
+        System.out.println("Piso Destino: " + persona.getPiso_destino());
+        
+        assertTrue(persona.getPiso_origen() < 4 && persona.getPiso_origen() > 0);
+        assertNotEquals(persona.getPiso_origen(), persona.getPiso_destino());
     }
 
-    /***
-     * El metodo .recibirLlamada() simula el apretar el boton por parte de la persona
-     */
+    // Al instanciar el ascensor por primera vez, este debe estar en el piso 1
     @Test
-    public void apretarBotonDeLlamada(){
-        System.out.println();
-        System.out.println("============================================");
-        System.out.println("Testing apretarBotonDeLlamada...");
-        System.out.println();
+    public void primerPisoAlInicioDelDia(){
+        System.out.println("Test Case: primerPisoAlInicioDelDia");
 
-        // 1. Preparacion de la prueba
-        Ascensor ascensor;
-        Persona persona;
-
-        // 2. Logica de la prueba
-        ascensor = new Ascensor();
-        persona = new Persona();
-        ascensor.recibirLlamada(persona.getPiso());
-
-        // 3. Verificacion (Assert)
-        assertTrue(ascensor.estaEnCamino());
-        assertEquals(persona.getPiso(), ascensor.getDestino());
-
-        System.out.println("============================================");
+        assertEquals(1, ascensor.getPiso_origen());
     }
 
-    /***
-     * El metodo .recogerPersona() hace que el ascensor recoja a la persona y obtenga su destino
-     */
+    // Llamada al ascensor
+    @Test
+    public void llamarAscensor(){
+        System.out.println("Test Case: llamarAscensor");
+
+        ascensor.llamada_ascensor(persona.getPiso_origen());
+
+        assertTrue(ascensor.getAscensor_en_camino());
+        assertEquals(persona.getPiso_origen(), ascensor.getPiso_destino());
+    }
+
+    //El ascensor recoje a la persona y la lleva a su destino
+     
     @Test
     public void recogerPersona(){
-        System.out.println();
-        System.out.println("============================================");
-        System.out.println("Testing recogerPersona...");
-        System.out.println();
+        System.out.println("Test Case: recogerPersona");
 
-        // 1. Preparacion de la prueba
-        Ascensor ascensor;
-        Persona persona;
+        persona.setPiso_destino();
 
-        // 2. Logica de la prueba
-        persona = new Persona();
-        persona.setDestino();
+        ascensor.llamada_ascensor(persona.getPiso_origen());
+        ascensor.recoger_persona(persona.getPiso_destino());
 
-        ascensor = new Ascensor();
-        ascensor.recibirLlamada(persona.getPiso());
-        ascensor.recogerPersona(persona.getDestino());
-
-        // 3. Verificacion (Assert)
-        assertTrue(ascensor.estaLleno());
-        assertEquals(ascensor.getDestino(), persona.getDestino());
-
-        System.out.println("============================================");
+        assertTrue(ascensor.getAscensor_lleno());
+        assertEquals(ascensor.getPiso_destino(), persona.getPiso_destino());
     }
 
-    /***
-     * El metodo .dejarPersona() hace que el ascensor se mueva al destino y deje a la persona
-     */
+    // El ascensor deja a la persona y se mueva al nuevo destino
     @Test
     public void dejarPersona(){
-        System.out.println();
-        System.out.println("============================================");
-        System.out.println("Testing dejarPersona...");
-        System.out.println();
+        System.out.println("Test Case: dejarPersona");
 
-        // 1. Preparacion de la prueba
-        Ascensor ascensor;
-        Persona persona;
+        persona.setPiso_destino();
 
-        // 2. Logica de la prueba
-        persona = new Persona();
-        persona.setDestino();
+        ascensor.llamada_ascensor(persona.getPiso_destino());
+        ascensor.recoger_persona(persona.getPiso_destino());
+        ascensor.dejar_persona();
 
-        ascensor = new Ascensor();
-        ascensor.recibirLlamada(persona.getPiso());
-        ascensor.recogerPersona(persona.getDestino());
-        ascensor.dejarPersona();
-
-        // 3. Verificacion (Assert)
-        assertFalse(ascensor.estaLleno());
-        assertEquals(ascensor.getPiso(), persona.getDestino());
-
-        System.out.println("============================================");
+        assertFalse(ascensor.getAscensor_lleno());
+        assertEquals(ascensor.getPiso_origen(), persona.getPiso_destino());
     }
 }
